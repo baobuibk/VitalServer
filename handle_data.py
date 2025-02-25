@@ -7,13 +7,13 @@ def parse_28_byte_content(data_28):
     """
     fields = struct.unpack('>ffffffI', data_28)
     return {
-        "Breath BPM": fields[0],
-        "Breath Curve": fields[1],
-        "Heart Rate BPM": fields[2],
-        "Heart Rate Curve": fields[3],
-        "Target Distance": fields[4],
-        "Signal Strength": fields[5],
-        "Valid Bit ID": fields[6],
+        "breath_bpm": fields[0],
+        "breath_curve": fields[1],
+        "heart_bpm": fields[2],
+        "heart_rate_curve": fields[3],
+        "target_distance": fields[4],
+        "signal_strength": fields[5],
+        "valid_bit_id": fields[6]
     }
 
 def parse_36_byte_content(data_36):
@@ -23,15 +23,15 @@ def parse_36_byte_content(data_36):
     """
     fields = struct.unpack('>ffffffIff', data_36)
     return {
-        "Breath BPM": fields[0],
-        "Breath Curve": fields[1],
-        "Heart Rate BPM": fields[2],
-        "Heart Rate Curve": fields[3],
-        "Target Distance": fields[4],
-        "Signal Strength": fields[5],
-        "Valid Bit ID": fields[6],
-        "Body Move Energy": fields[7],
-        "Body Move Range": fields[8],
+        "breath_bpm": fields[0],
+        "breath_curve": fields[1],
+        "heart_bpm": fields[2],
+        "heart_rate_curve": fields[3],
+        "target_distance": fields[4],
+        "signal_strength": fields[5],
+        "valid_bit_id": fields[6],
+        "body_move_energy": fields[7],
+        "body_move_range": fields[8],
     }
 
 def parse_packet(data):

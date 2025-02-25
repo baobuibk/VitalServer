@@ -1,6 +1,6 @@
 import environment
 import http_client
-import  handle_data
+import handle_data
 
 import asyncio
 import numpy as np
@@ -19,6 +19,20 @@ ip_to_writer_map = {}
 
 # Global MQTT client
 mqtt_client = None
+
+# -----------------------------------------------
+# Background task to refresh the AUTH_TOKEN
+# every 3 hours (10800 seconds)
+# -----------------------------------------------
+async def refresh_auth_token():
+    while True:
+        await asyncio.sleep(10800)  # 3 hours in seconds
+        try:
+            environment.AUTH_TOKEN = http_client.login_access_token(environment.USERNAME, environment.PASSWORD)
+            print("[Auth Refresh] Successfully refreshed AUTH_TOKEN.")
+        except Exception as e:
+            print(f"[Auth Refresh] Exception while refreshing token: {e}")
+
 
 async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
     global count
@@ -123,26 +137,22 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
                 else:
                     if len(content_data) == 28:
                         parsed = handle_data.parse_28_byte_content(content_data)
-                        print(f"[Parsed 28-byte content from IP={client_ip}, ID={client_id}]")
-                        for k, v in parsed.items():
-                            print(f"   {k}: {v}")
 
                         # Publish the data to MQTT as JSON
-                        index_data = {"ID": client_id}
-                        json_data = json.dumps([index_data, parsed], indent=4)
+                        index_data = {"device_id": client_id}
+                        index_data.update(parsed)  # merges the "parsed" data into index_data
+                        json_data = json.dumps(index_data, indent=4)
                         print(json_data)
 
                         mqtt_client.publish(http_client.generate_topic(client_id), json_data)
 
                     elif len(content_data) == 36:
                         parsed = handle_data.parse_36_byte_content(content_data)
-                        print(f"[Parsed 36-byte content from IP={client_ip}, ID={client_id}]")
-                        for k, v in parsed.items():
-                            print(f"   {k}: {v}")
 
                         # Publish the data to MQTT as JSON
-                        index_data = {"ID": client_id}
-                        json_data = json.dumps([index_data, parsed], indent=4)
+                        index_data = {"device_id": client_id}
+                        index_data.update(parsed)  # merges the "parsed" data into index_data
+                        json_data = json.dumps(index_data, indent=4)
                         print(json_data)
 
                         mqtt_client.publish(http_client.generate_topic(client_id), json_data)
@@ -175,6 +185,9 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
 async def main():
     global mqtt_client
 
+    # Create and start the background task for refreshing token:
+    asyncio.create_task(refresh_auth_token())
+
     # ---------------- MQTT Setup ----------------
     mqtt_client = mqtt.Client(client_id="AEROSENSEClient")
 
@@ -191,12 +204,11 @@ async def main():
     # Start a background thread to handle the network loop
     mqtt_client.loop_start()
 
+    # HTTP Server
+    environment.AUTH_TOKEN = http_client.login_access_token(environment.USERNAME, environment.PASSWORD)
+
     facilities = http_client.get_facility_list()
-    ret_val = http_client.check_facility(facilities)
-    if ret_val == 0:
-        unique_name = environment.TCP_SERVER_NAME
-        print(f"Selected Facility ID: {http_client.number_of_facility}, Unique Name: {unique_name}")
-        http_client.register_tcp_server(http_client.number_of_facility, unique_name)
+    http_client.register_tcp_server(environment.FACILITY_ID, environment.TCP_SERVER_NAME)
 
     # ---------------- TCP Server Setup (asyncio) ----------------
     server = await asyncio.start_server(
@@ -213,5 +225,4 @@ async def main():
         await server.serve_forever()
 
 if __name__ == '__main__':
-
     asyncio.run(main())
