@@ -32,5 +32,5 @@ cert_path = "tcp-server.cert.pem"  # Path to tới certificate
 MQTT_PORT = 8883  # Port MQTT SSL
 
 # TCP_SERVER
-TCP_SERVER_HOST = '192.168.1.202'
+TCP_SERVER_HOST = '0.0.0.0'
 TCP_SERVER_PORT = 8899

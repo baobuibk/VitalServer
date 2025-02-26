@@ -8,6 +8,9 @@ import json
 import ssl
 import paho.mqtt.client as mqtt
 
+from datetime import datetime
+import time
+
 # Global counter (uint32)
 count = np.uint32(0)
 
@@ -138,9 +141,15 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
                     if len(content_data) == 28:
                         parsed = handle_data.parse_28_byte_content(content_data)
 
+                        # local_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        local_time = int(time.time())
                         # Publish the data to MQTT as JSON
-                        index_data = {"device_id": client_id}
+                        index_data = {
+                            "device_id": client_id,
+                            "current_time": local_time,
+                        }
                         index_data.update(parsed)  # merges the "parsed" data into index_data
+
                         json_data = json.dumps(index_data, indent=4)
                         print(json_data)
 
@@ -149,9 +158,15 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
                     elif len(content_data) == 36:
                         parsed = handle_data.parse_36_byte_content(content_data)
 
+                        # local_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        local_time = int(time.time())
                         # Publish the data to MQTT as JSON
-                        index_data = {"device_id": client_id}
+                        index_data = {
+                            "device_id": client_id,
+                            "current_time": local_time,
+                        }
                         index_data.update(parsed)  # merges the "parsed" data into index_data
+
                         json_data = json.dumps(index_data, indent=4)
                         print(json_data)
 
