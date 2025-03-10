@@ -6,6 +6,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 import time
 import json
 
+import uuid
 # -------------------------------------------------
 # Link the Environment and FrontEnd folders
 # Therefore, can import environment.py
@@ -54,11 +55,14 @@ from environment_manager import (
     update_temp_auth_token,
     get_temp_auth_token,
     update_temp_info_user,
-    get_temp_auth_token
+    get_temp_auth_token,
+    get_aws_endpoint,
+    get_facility_id
 )
 
 server_running = False
 
+admin_session_token = None
 # -------------------------------------------------
 # Application to interface with User
 # -------------------------------------------------
@@ -81,6 +85,16 @@ print("Upload folder path:", app.config['UPLOAD_FOLDER'])
 reset_credentials() 
 
 # --------------------------------------------------
+# Create a new session token to check login from 
+# 1 device by admin account
+# --------------------------------------------------
+def update_admin_session():
+    global admin_session_token
+    new_session_token = str(uuid.uuid4())  
+    admin_session_token = new_session_token
+    return new_session_token
+
+# --------------------------------------------------
 # Home -> Return login screen
 # --------------------------------------------------
 @app.route("/")
@@ -94,6 +108,10 @@ def home():
 # --------------------------------------------------
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    global admin_session_token
+
+    error_message = request.args.get("error", "")
+
     if request.method == "POST":
         login_username_new = request.form.get("username", "").strip()
         login_password_new = request.form.get("password", "").strip()
@@ -101,22 +119,46 @@ def login():
         print(f"[INFO] Received login request - Username: {login_username_new}, Password: {'*' * len(login_password_new)}")
 
         # Fetch stored credentials
-        credentials = get_login_info()  # ⬅ Fetch stored username & password
+        credentials = get_login_info()
         login_username_old = credentials["login_username"]
         login_password_old = credentials["login_password"]
 
-        # Check if username and password match
-        if login_username_new == login_username_old and login_password_new == login_password_old:
+        # if login_username_new == login_username_old and login_password_new == login_password_old:
+        if login_username_new in ["admin", "supervisor"] and login_password_new == login_password_old:
+            # If user is admin, enforce single session
+            if login_username_new == "admin":
+                # if admin_session_token and session.get("session_token") != admin_session_token:
+                if admin_session_token and "session_token" in session and session["session_token"] != admin_session_token:
+                    return jsonify({
+                        "success": False,
+                        "message": "Admin is already logged in from another session. Please log out first."
+                    })
+
+                # Update session token for admin
+                session_token = update_admin_session()
+                session["authenticated"] = True
+                session["session_token"] = session_token
+                session["username"] = login_username_new
+
+            elif login_username_new == "supervisor":
+                session["authenticated"] = True
+                session["username"] = login_username_new
+                redirect_url = url_for("server_status")
+
+            else:
+                # For non-admin users, allow multi-session
+                # session["authenticated"] = True
+                # session["username"] = login_username_new
+                return jsonify({"success": False, "message": "Unauthorized user."})
+
             print("[INFO] Login successful! Redirecting to server.")
-            session["authenticated"] = True  # Set session
-            return jsonify({"success": True, "redirect": url_for("server_status")}) 
+            return jsonify({"success": True, "redirect": url_for("server_status")})
 
         else:
             print("[ERROR] Incorrect username or password.")
-            return jsonify({"success": False, "message": "Incorrect username or password.", "redirect": url_for("login")})
+            return jsonify({"success": False, "message": "Incorrect username or password."})
 
-    # 🔹 Fix: Return login page on GET request
-    return render_template("login.html")
+    return render_template("login.html", error=error_message)
 
 # --------------------------------------------------
 # Authenticate function: 
@@ -194,12 +236,27 @@ def authenticate():
     
     return jsonify({"success": False, "redirect": url_for("dashboard")})
 
+
+# --------------------------------------------------
+# Server status to check the login from 1 device
+# with admin account, multiple device cannot access
+# by admin account if not logout in first device
+# --------------------------------------------------
 @app.route("/server_status")
 def server_status():
-    if "authenticated" in session and session["authenticated"]:
-        return render_template("server_status.html")
+    if not session.get("authenticated"):
+        return redirect(url_for("login"))
 
-    return render_template("login.html")
+    if session.get("username") == "admin" and session.get("session_token") != admin_session_token:
+        session.pop("authenticated", None)
+        session.pop("session_token", None)
+        session.pop("username", None)
+
+        session.clear()
+        
+        return redirect(url_for("login", error="Your session has been terminated due to a new login."))
+
+    return render_template("server_status.html")
 
 # --------------------------------------------------
 # Dashboard function: 
@@ -209,6 +266,14 @@ def server_status():
 def dashboard():
     if not session.get("authenticated"):
         return redirect(url_for("login"))
+
+    if session.get("username") == "admin" and session.get("session_token") != admin_session_token:
+        session.pop("authenticated", None)
+        session.pop("session_token", None)
+        return redirect(url_for("login"))
+
+    if session.get("username") == "supervisor":
+        return redirect(url_for("server_status"))
 
     skip_fetch = request.args.get("skip_fetch", "false").lower() == "true"
     
@@ -311,8 +376,6 @@ def upload_cert():
         return jsonify({"success": True, "uploaded_files": saved_files, "updated_paths": updated_paths}), 200
     else:
         return jsonify({"success": False, "message": "No files selected"}), 400
-
-
 
 # --------------------------------------------------
 # Select facility ID function: 
@@ -542,22 +605,59 @@ def uploaded_files():
     files, aws_iot_endpoint = get_uploaded_files()  # Get files + endpoint dynamically
     return jsonify({"files": files, "aws_endpoint": aws_iot_endpoint})
 
+@app.route("/check_session")
+def check_session():
+    if not session.get("authenticated"):
+        return jsonify({"valid": False, "message": "Your session has been terminated due to a new login."})
+
+    if session.get("username") == "admin" and session.get("session_token") != admin_session_token:
+        session.clear()
+        return jsonify({"valid": False, "message": "Your session has been terminated due to a new login."})
+
+    return jsonify({"valid": True})  # Session is still valid
+
+@app.route("/get_current_config", methods=["GET"])
+def get_current_config():
+    """Fetch and return facility list, selected facility ID, and AWS IoT endpoint."""
+    try:
+        facility_list_response = get_facility_list()  # This is a dictionary {'data': [...], 'count': X}
+        facility_list = facility_list_response.get("data", [])  # Extract only the list of facilities
+        count = facility_list_response.get("count", 0)
+
+        aws_iot_endpoint = get_aws_endpoint()
+        facility_id = get_facility_id()
+
+        config_data = {
+            "aws_iot_endpoint": aws_iot_endpoint,
+            "facility_id": facility_id,
+            "facilities": facility_list,
+            "count": count
+        }
+
+        return jsonify({"success": True, "config": config_data})
+
+    except Exception as e:
+        return jsonify({"success": False, "message": f"Error retrieving config: {str(e)}"}), 500
+
+
+
 # ------------------------------------------------------
 # Logout function: 
 # -> Log out dashboard and return login screen
 # ------------------------------------------------------
 @app.route("/logout")
 def logout():
+    global admin_session_token
+    if session.get("username") == "admin" and session.get("session_token") == admin_session_token:
+        print("[DEBUG] Admin logging out, clearing admin_session_token.")
+        admin_session_token = None
+
     session.pop("authenticated", None)
+    session.pop("session_token", None)
+    session.pop("username", None)
+
     return redirect(url_for("login"))
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port = 8500, debug=True, use_reloader=False)
-    
-
-
-    
-    
-    
-
+    app.run(host="0.0.0.0", debug=True, use_reloader=False)

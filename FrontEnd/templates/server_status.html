@@ -25,8 +25,40 @@
             <div class="status-card green" id="tcpServerStatus">TCP Server: <span id="tcpStatusText">Loading...</span></div>
             <div class="status-card green" id="awsServerStatus">AWS Server: <span id="awsStatusText">Loading...</span></div>
         </div>
-    </div>
 
+        <h1>Current Configuration TCP Server</h1>
+        <div class="data-section">
+            <h2>Facility Lists</h2>
+            <p>Total Entries: <span id="facilityCount">Loading...</span></p>
+            <table class = "facility-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Timezone</th>
+                        <th>TCP Server Name</th>
+                    </tr>
+                </thead>
+                <tbody id="facilityTableBody">
+                    <!-- Data will be inserted dynamically -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Facility ID Display -->
+        <div class="data-section">
+            <h2>Selected Facility ID</h2>
+            <p><strong>Facility ID:</strong> <span id="facilityIDDisplay">Loading...</span></p>
+        </div>
+
+        <!-- AWS IoT Endpoint Display -->
+        <div class="data-section">
+            <h2>AWS IoT Endpoint</h2>
+            <p><strong>Endpoint:</strong> <span id="awsEndpointDisplay">Loading...</span></p>
+        </div>
+        </div>
+        
     <script>
         function fetchServerStatus() {
             $.get("/check_status_server", function (response) {
@@ -73,9 +105,48 @@
             });
         }
 
+        function loadCurrentConfig() {
+            $.get("/get_current_config", function (response) {
+                if (response.success) {
+                    let config = response.config;
+
+                    // Update AWS IoT Endpoint
+                    $("#awsEndpointDisplay").text(config.aws_iot_endpoint);
+
+                    // Update Facility ID
+                    $("#facilityIDDisplay").text(config.facility_id);
+
+                    // Ensure facilities exist before updating table
+                    if (config.facilities && config.facilities.length > 0) {
+                        let tableRows = config.facilities.map(facility => `
+                            <tr>
+                                <td>${facility.id}</td>
+                                <td>${facility.name}</td>
+                                <td>${facility.address || "N/A"}</td>
+                                <td>${facility.timezone}</td>
+                                <td>${facility.tcp_server_name}</td>
+                            </tr>
+                        `).join("");
+
+                        $("#facilityTableBody").html(tableRows);  // Insert rows into table
+                        $("#facilityCount").text(config.count);   // Update total count
+                    } else {
+                        $("#facilityTableBody").html("<tr><td colspan='5'>No facilities found.</td></tr>");
+                        $("#facilityCount").text("0");
+                    }
+                } else {
+                    $("#configDisplay").html("<p style='color: red;'>Error fetching configuration.</p>");
+                }
+            }).fail(function () {
+                $("#configDisplay").html("<p style='color: red;'>Failed to load server configuration.</p>");
+            });
+        }
+
+
         // Call the function when the page loads (after login)
         fetchServerStatus();
         fetchDeviceManagement();
+        loadCurrentConfig();
     </script>
 </body>
 </html>

@@ -2,7 +2,7 @@ ALLOWED_EXTENSIONS = {".crt", ".private.key", ".cert.pem"}
 
 # Authentication Token
 TEMP_AUTH_TOKEN = None
-AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDE1NzE1MDAsInN1YiI6IjMifQ.MEuNNhFWS89Brlrq-suHzdGO2oGSKpvhoZjeU_RhuNU"
+AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDE2MzU0MjAsInN1YiI6IjMifQ.a-vDN1I3BOeV406zpI32qrvEY5ezOOhWqfqYHp0RHQw"
 
 #IP for DreamsEdge API
 IP_API = "54.252.196.164"

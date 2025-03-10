@@ -77,6 +77,7 @@ body {
 
 /* ✅ Status section */
 .status-container {
+    font-size: 14px;
     display: flex;
     justify-content: space-around;
     margin-top: 20px;
@@ -164,6 +165,67 @@ body {
     background-color: #ddd;
 }
 
+.data-section table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+.data-section {
+    font-size: 14px;
+    width: 80%;
+    max-width: 900px;
+    background: white;
+    padding: 20px;
+    margin: 20px auto; /* Centers and spaces elements */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.facility-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    border-radius: 10px;
+    overflow: hidden;  /* Ensures rounded corners apply */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.facility-table thead {
+    background-color: #28a745; /* Green header */
+    color: white;
+    font-weight: bold;
+    text-align: left;
+}
+
+.facility-table th, .facility-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.facility-table tbody tr:nth-child(odd) {
+    background-color: #f8f9fa; /* Light gray */
+}
+
+.facility-table tbody tr:nth-child(even) {
+    background-color: #e9ecef; /* Slightly darker gray */
+}
+
+.facility-table tbody tr:hover {
+    background-color: #d4edda; /* Light green hover effect */
+    transition: 0.2s;
+}
+
+.facility-table td {
+    font-weight: normal;
+}
+
+.facility-table td:first-child {
+    font-weight: bold; /* Make the ID column bold */
+}
 
 /* ✅ Responsive adjustments */
 @media screen and (max-width: 768px) {
@@ -182,6 +244,13 @@ body {
         width: 100%;
     }
     .device-section table {
+        font-size: 14px;
+    }
+    .data-section {
+        width: 100%;
+        overflow-x: auto;
+    }
+    table {
         font-size: 14px;
     }
 }

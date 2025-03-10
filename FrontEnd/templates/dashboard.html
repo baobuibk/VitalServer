@@ -182,6 +182,14 @@
 
             loadUploadedFilesAndEndpoint();
 
+            updateFileInfo("file1", "fileInfo1");
+            updateFileInfo("file2", "fileInfo2");
+            updateFileInfo("file3", "fileInfo3");
+
+            loadExistingFiles();
+
+            setInterval(checkSession, 5000);
+
             $("#AuthenticateForm").submit(function (event) {
             event.preventDefault(); // Prevent page reload
 
@@ -349,6 +357,24 @@
             });
         });
 
+        function checkSession() {
+            $.get("/check_session", function(response) {
+                if (!response.valid) {
+                    alert(response.message); 
+                    // $("button").prop("disabled", true); // Disable all buttons
+                    $("#startServer").prop("disabled", true).css("opacity", "0.5");
+                    $("#stopServer").prop("disabled", true).css("opacity", "0.5");
+                    $("#AuthenticateButton").prop("disabled", true).css("opacity", "0.5"); 
+                    $("#AWSUpdateButton").prop("disabled", true).css("opacity", "0.5");
+                    $("#AWSCheckingButton").prop("disabled", true).css("opacity", "0.5");
+                    $("#UploadButton").prop("disabled", true).css("opacity", "0.5");
+                    $("#FacilityIDButton").prop("disabled", true).css("opacity", "0.5"); // Disable Select Facility Submit Button
+                    
+                    setTimeout(function() { window.location.href = "/login"; }, 1000); // Redirect after 2 seconds
+                }
+            });
+        }
+
         function checkServerStatus() {
             $.get("/button_server_status", function (response) {
                 console.log("Server status response:", response); // Debugging
@@ -434,13 +460,6 @@
                 console.error("Error fetching uploaded files and endpoint.");
             });
         }
-
-        updateFileInfo("file1", "fileInfo1");
-        updateFileInfo("file2", "fileInfo2");
-        updateFileInfo("file3", "fileInfo3");
-
-        loadExistingFiles();
-
     </script>
 </body>
 </html>
