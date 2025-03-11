@@ -2,7 +2,7 @@ import struct
 
 def check_in_out_of_bed(data):
 
-    if data['breath_bpm'] == 0 and data['heart_bpm'] == 0:
+    if int(data['breath_bpm']) == 0 and int(data['heart_bpm']) == 0:
         data['out_of_bed'] = True
     else:
         data['out_of_bed'] = False
