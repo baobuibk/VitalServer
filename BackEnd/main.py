@@ -460,6 +460,8 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
                     if len(content_data) == 28:
                         parsed = handle_data.parse_28_byte_content(content_data)
 
+                        handle_data.check_in_out_of_bed(parsed)
+
                         local_time = int(time.time())
                         # Publish the data to MQTT as JSON
                         index_data = {
@@ -476,6 +478,8 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
 
                     elif len(content_data) == 36:
                         parsed = handle_data.parse_36_byte_content(content_data)
+
+                        handle_data.check_in_out_of_bed(parsed)
 
                         local_time = int(time.time())
                         # Publish the data to MQTT as JSON
