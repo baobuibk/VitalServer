@@ -311,7 +311,7 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
                         print(f"[Before Publish] Preparing to publish data for device {client_id}")
                         system_log.log_to_redis(f"[Before Publish] Preparing to publish data for device {client_id}")
                         
-                        info = mqtt_client.publish(http_client.generate_topic(client_id), json_data, qos=0)
+                        info = mqtt_client.publish(http_client.generate_topic(client_id), json_data, qos=1)
                         
                         if info.rc == mqtt.MQTT_ERR_SUCCESS:
                             print(f"Message successfully sent with {client_id}!")
@@ -340,7 +340,7 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
                         print(f"[Before Publish] Preparing to publish data for device {client_id}")
                         system_log.log_to_redis(f"[Before Publish] Preparing to publish data for device {client_id}")
 
-                        info = mqtt_client.publish(http_client.generate_topic(client_id), json_data, qos=0)
+                        info = mqtt_client.publish(http_client.generate_topic(client_id), json_data, qos=1)
                         
                         if info.rc == mqtt.MQTT_ERR_SUCCESS:
                             print(f"Message successfully sent with {client_id}!")
