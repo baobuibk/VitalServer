@@ -192,6 +192,25 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
     if client_ip not in ip_to_id_map:
         count += 1
 
+    # ---------------- MQTT Setup ----------------
+    mqtt_client = mqtt.Client(client_id=client_ip)
+
+    mqtt_client.on_publish = on_publish
+
+    # Configure SSL for secure connections to AWS IoT
+    mqtt_client.tls_set(ca_certs=environment.root_ca_path,
+                        certfile=environment.cert_path,
+                        keyfile=environment.private_key_path,
+                        tls_version=ssl.PROTOCOL_TLSv1_2)
+
+    system_log.log_to_redis(environment.AWS_IOT_ENDPOINT)
+    system_log.log_to_redis(environment.MQTT_PORT)
+    # Connect to broker
+    mqtt_client.connect(environment.AWS_IOT_ENDPOINT, environment.MQTT_PORT, 60)
+
+    # Start a background thread to handle the network loop
+    mqtt_client.loop_start()
+
     try:
         while True:
             # ----------------------------------------------------------
@@ -232,24 +251,6 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
                 print(f"[Server] (1) Registered new: IP={client_ip}, ID={new_id_hex}. count={count}")
                 system_log.log_to_redis(f"[Server] (1) Registered new: IP={client_ip}, ID={new_id_hex}. count={count}")
 
-                # ---------------- MQTT Setup ----------------
-                mqtt_client = mqtt.Client(client_id=new_id_hex)
-
-                mqtt_client.on_publish = on_publish
-
-                # Configure SSL for secure connections to AWS IoT
-                mqtt_client.tls_set(ca_certs=environment.root_ca_path,
-                                    certfile=environment.cert_path,
-                                    keyfile=environment.private_key_path,
-                                    tls_version=ssl.PROTOCOL_TLSv1_2)
-
-                system_log.log_to_redis(environment.AWS_IOT_ENDPOINT)
-                system_log.log_to_redis(environment.MQTT_PORT)
-                # Connect to broker
-                mqtt_client.connect(environment.AWS_IOT_ENDPOINT, environment.MQTT_PORT, 60)
-
-                # Start a background thread to handle the network loop
-                mqtt_client.loop_start()
 
                 # Build a response that contains 'count'
                 data_resp = [
