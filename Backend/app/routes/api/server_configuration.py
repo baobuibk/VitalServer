@@ -5,6 +5,9 @@ import app.environment.environment_manager as environment_manager
 import app.services.auth_server as auth_server
 import app.routes.api.system_log as system_log
 
+import app.services.http_client as http_client
+import app.environment.environment as environment
+
 import os
 import asyncio
 
@@ -119,6 +122,10 @@ def select_facility_id():
 
         print(f"[INFO] Facility ID Updated: {facility_id}")
         system_log.log_to_redis(f"[INFO] Facility ID Updated: {facility_id}")
+
+        environment_manager.reload_environment()
+
+        http_client.register_tcp_server(environment.FACILITY_ID, environment.TCP_SERVER_NAME)
 
         return jsonify({"success": True, "message": f"Facility ID '{facility_id}' updated successfully!"})
 

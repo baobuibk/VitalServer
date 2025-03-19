@@ -5,8 +5,6 @@ import aiohttp
 
 import app.environment.environment as environment
 
-import app.routes.api.system_log as system_log
-
 # Base URL for DreamsEdge API
 BASE_URL = f"http://{environment.IP_API}:8000"
 
@@ -48,84 +46,63 @@ def login_access_token(user_name, password):
         response = requests.post(url, headers=header_login, data=data)  # Use `data` instead of `params`
         response.raise_for_status()
 
-        system_log.log_to_redis(response.json()["access_token"])
         print(response.json()["access_token"])
 
         return response.json()["access_token"]
 
     except requests.HTTPError as http_err:
-        system_log.log_to_redis(f"Error getting access token: {http_err}")
-        system_log.log_to_redis(f"Response: {response.text}")
 
         print(f"Error getting access token: {http_err}")
         print(f"Response: {response.text}")
     except requests.RequestException as e:
-        system_log.log_to_redis("Request error:", e)
         print("Request error:", e)
 
 
 def get_facility_list(skip=0, limit=100):
     url = f"{BASE_URL}/facility/list?skip={skip}&limit={limit}"
-    system_log.log_to_redis(f"Fetching facility list from: {url}")  # Debugging
     print(f"Fetching facility list from: {url}")  # Debugging
 
     try:
         response = requests.get(url, headers=get_headers(), timeout=10)
-        system_log.log_to_redis(f"Response status code: {response.status_code}")  # Debugging
         print(f"Response status code: {response.status_code}")  # Debugging
 
         response.raise_for_status()  # Raise an error for non-200 responses
 
         facility_list = response.json()
 
-        # system_log.log_to_redis the JSON response in a readable format
-        system_log.log_to_redis(json.dumps(facility_list, indent=4, ensure_ascii=False))
         print(json.dumps(facility_list, indent=4, ensure_ascii=False))
 
         return facility_list
     except requests.exceptions.Timeout:
-        system_log.log_to_redis("Request timed out! The server may be down.")
         print("Request timed out! The server may be down.")
     except requests.exceptions.ConnectionError:
-        system_log.log_to_redis("Failed to connect to the API. Check your network or server status.")
         print("Failed to connect to the API. Check your network or server status.")
     except requests.exceptions.HTTPError as http_err:
-        system_log.log_to_redis(f"HTTP error occurred: {http_err}")
         print(f"HTTP error occurred: {http_err}")
     except requests.RequestException as e:
-        system_log.log_to_redis(f"Error fetching facility list: {e}")
         print(f"Error fetching facility list: {e}")
 
     return None
 
 def get_device_list(skip=0, limit=100):
     url = f"{BASE_URL}/device/list?skip={skip}&limit={limit}"
-    system_log.log_to_redis(f"Fetching device list from: {url}")  # Debugging
 
     try:
         response = requests.get(url, headers=get_headers(), timeout=10)
-        system_log.log_to_redis(f"Response status code: {response.status_code}")  # Debugging
         print(f"Response status code: {response.status_code}")  # Debugging
 
         response.raise_for_status()  # Raise an error for non-200 responses
 
         device_list = response.json()
 
-        # system_log.log_to_redis the JSON response in a readable format
-        system_log.log_to_redis(json.dumps(device_list, indent=4, ensure_ascii=False))
-
         return device_list
     except requests.exceptions.Timeout:
-        system_log.log_to_redis("Request timed out! The server may be down.")
         print("Request timed out! The server may be down.")
     except requests.exceptions.ConnectionError:
-        system_log.log_to_redis("Failed to connect to the API. Check your network or server status.")
         print("Failed to connect to the API. Check your network or server status.")
     except requests.exceptions.HTTPError as http_err:
-        system_log.log_to_redis(f"HTTP error occurred: {http_err}")
         print(f"HTTP error occurred: {http_err}")
     except requests.RequestException as e:
-        system_log.log_to_redis(f"Error fetching facility list: {e}")
         print(f"Error fetching facility list: {e}")
 
     return None
@@ -154,17 +131,12 @@ def register_tcp_server(facility_id, unique_name):
 
         register_tcp = response.json()
 
-        # system_log.log_to_redis the JSON response in a readable format
-        system_log.log_to_redis(json.dumps(register_tcp, indent=4, ensure_ascii=False))
+        return register_tcp
 
     except requests.HTTPError as http_err:
-        system_log.log_to_redis(f"Error registering TCP server: {http_err}")
-        system_log.log_to_redis(f"Response Content: {response.text}")  # system_log.log_to_redis the API response for debugging
-    
         print(f"Error registering TCP server: {http_err}")
         print(f"Response Content: {response.text}")  # Print the API response for debugging
     except requests.RequestException as e:
-        system_log.log_to_redis("Request error:", e)
         print("Request error:", e)
 
 async def register_device(device_id):
@@ -185,16 +157,12 @@ async def register_device(device_id):
 
                 new_device = await response.json()
 
-                # system_log.log_to_redis the JSON response in a readable format
-                system_log.log_to_redis(json.dumps(new_device, indent=4, ensure_ascii=False))
                 print(json.dumps(new_device, indent=4, ensure_ascii=False))
 
-                system_log.log_to_redis("Device successfully registered:", new_device)
-                print("Device successfully registered:", new_device)
+                # print("Device successfully registered:", new_device)
                 return new_device
 
     except Exception as e:
-        system_log.log_to_redis(f"Error registering device: {e}")
         print(f"Error registering device: {e}")
         return None
 

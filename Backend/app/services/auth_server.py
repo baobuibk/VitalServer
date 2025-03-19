@@ -124,9 +124,11 @@ def facility_list():
 
     if facilities:
         environment_manager.update_facility_list(facilities)
+        # system_log.log_to_redis("[INFO] Successfully retrieved facility list.")
         print("[INFO] Successfully retrieved facility list.")
         return facilities   
     else:
+        # system_log.log_to_redis("[ERROR] No facilities found or API request failed.")
         print("[ERROR] No facilities found or API request failed.")
         return None
 

@@ -137,8 +137,10 @@ async def refresh_auth_token():
         try:
             auth_token = http_client.login_access_token(environment.USERNAME, environment.PASSWORD)
             environment_manager.update_auth_token(auth_token)
+            system_log.log_to_redis("[Auth Refresh] Successfully refreshed AUTH_TOKEN.")
             print("[Auth Refresh] Successfully refreshed AUTH_TOKEN.")
         except Exception as e:
+            system_log.log_to_redis(f"[Auth Refresh] Exception while refreshing token: {e}")
             print(f"[Auth Refresh] Exception while refreshing token: {e}")
 
 # -----------------------------------------------
@@ -244,7 +246,11 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
                 else:
                     new_id_hex = "TooShort"
 
-                http_client.register_device(new_id_hex)
+                new_device = await http_client.register_device(new_id_hex)
+
+                if new_device:
+                    print(f"[Server] Device successfully registered: {new_device}")
+                    system_log.log_to_redis(f"[Server] Device successfully registered: {new_device}")
 
                 ip_to_id_map[client_ip] = new_id_hex
 
