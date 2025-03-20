@@ -59,6 +59,8 @@ def update_info_user(username, password):
 
     with open(ENV_FILE_PATH, "w", encoding="utf-8") as f:
         f.writelines(lines)
+        f.flush()  # Force Python to flush its internal buffers
+        os.fsync(f.fileno())  # Force the OS to write buffers to the disk
 
     # Reload to updated values
     importlib.reload(environment)
@@ -74,6 +76,8 @@ def update_start_server_status(token):
 
     with open(ENV_FILE_PATH, "w", encoding="utf-8") as f:
         f.writelines(lines)
+        f.flush()  # Force Python to flush its internal buffers
+        os.fsync(f.fileno())  # Force the OS to write buffers to the disk
 
     # Reload to updated values
     importlib.reload(environment)
@@ -89,6 +93,8 @@ def update_stop_server_status(token):
 
     with open(ENV_FILE_PATH, "w", encoding="utf-8") as f:
         f.writelines(lines)
+        f.flush()  # Force Python to flush its internal buffers
+        os.fsync(f.fileno())  # Force the OS to write buffers to the disk
 
     # Reload to updated values
     importlib.reload(environment)
@@ -111,6 +117,8 @@ def update_auth_token(token):
 
     with open(ENV_FILE_PATH, "w", encoding="utf-8") as f:
         f.writelines(lines)
+        f.flush()  # Force Python to flush its internal buffers
+        os.fsync(f.fileno())  # Force the OS to write buffers to the disk
 
     # Reload so environment.AUTH_TOKEN is updated
     importlib.reload(environment)
@@ -143,6 +151,8 @@ def update_facility_list(facilities):
 
     with open(ENV_FILE_PATH, "w", encoding="utf-8") as f:
         f.writelines(lines)
+        f.flush()  # Force Python to flush its internal buffers
+        os.fsync(f.fileno())  # Force the OS to write buffers to the disk
 
     # Reload to updated values
     importlib.reload(environment)
@@ -160,6 +170,8 @@ def update_facility_id(token):
     
     with open(ENV_FILE_PATH, "w", encoding="utf-8") as f:
         f.writelines(lines)
+        f.flush()  # Force Python to flush its internal buffers
+        os.fsync(f.fileno())  # Force the OS to write buffers to the disk
 
     # Reload to updated  
     importlib.reload(environment)
@@ -183,6 +195,8 @@ def update_aws_endpoint(token):
 
     with open(ENV_FILE_PATH, "w", encoding="utf-8") as f:
         f.writelines(lines)
+        f.flush()  # Force Python to flush its internal buffers
+        os.fsync(f.fileno())  # Force the OS to write buffers to the disk
 
     # Reload the updated environment variables
     importlib.reload(environment)
@@ -298,6 +312,8 @@ def update_status_tcp_server(value):
     # Open and Write in environment.py
     with open(ENV_FILE_PATH, "w", encoding="utf-8") as f:
         f.writelines(lines)
+        f.flush()  # Force Python to flush its internal buffers
+        os.fsync(f.fileno())  # Force the OS to write buffers to the disk
 
     # Reload to get updated values
     importlib.reload(environment)  
@@ -323,6 +339,8 @@ def update_status_aws_server(value):
     # Open and Write in environment.py
     with open(ENV_FILE_PATH, "w", encoding="utf-8") as f:
         f.writelines(lines)
+        f.flush()  # Force Python to flush its internal buffers
+        os.fsync(f.fileno())  # Force the OS to write buffers to the disk
 
     # Reload to get updated values
     importlib.reload(environment) 
@@ -350,6 +368,8 @@ def update_logging_configuration(max_bytes, backup_count):
     # Open and Write in environment.py
     with open(ENV_FILE_PATH, "w", encoding="utf-8") as f:
         f.writelines(lines)
+        f.flush()  # Force Python to flush its internal buffers
+        os.fsync(f.fileno())  # Force the OS to write buffers to the disk
 
     # Reload to get updated values
     importlib.reload(environment) 

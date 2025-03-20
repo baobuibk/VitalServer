@@ -2,7 +2,7 @@
 ALLOWED_EXTENSIONS = {".crt", ".private.key", ".cert.pem"}
 
 # Authentication Token
-AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDIzNzEzODUsInN1YiI6IjMifQ.YN-T0d_JZb04lmf_sVGNyZQpZSinqC4Odc9wqyNYUhI"
+AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDI0NDg3MDgsInN1YiI6IjMifQ.P7pMkHz2zOfRXDBV-F308JN54LgCVJT2D8V8E_xHzcc"
 
 #IP for DreamsEdge API
 IP_API = "54.252.196.164"
@@ -12,7 +12,7 @@ TCP_SERVER_NAME = "another-tcp-server"
 
 # Deivice name
 DEVICE_NAME = "AerosenseDevice"
-FACILITY_ID = 11
+FACILITY_ID = 1
 
 # Login Information
 LOGIN_USERNAME = "admin"
