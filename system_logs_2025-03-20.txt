@@ -1783,3 +1783,189 @@
 2025-03-20 11:34:40,737 - INFO - [INFO] Cleaning up before exit...
 2025-03-20 11:34:40,737 - INFO - [Async] Removed IP=192.168.1.64 from ip_to_id_map.
 2025-03-20 11:34:40,738 - INFO - [Async] Ended for 192.168.1.64.
+2025-03-20 11:54:01,682 - INFO - [INFO] Starting TCP Server...
+2025-03-20 11:54:01,685 - INFO - [Async] TCP Server is running on ('0.0.0.0', 8899)
+2025-03-20 11:54:05,244 - INFO - [Async] Handling new client from IP=192.168.1.64
+2025-03-20 11:54:05,246 - INFO - Received data (hex): 1301010100000001000a000000140001010200001d2cb1b08ea72c54eb886b37dd01
+2025-03-20 11:54:05,247 - INFO - [Parsed] function=0x0001, content_len=20, content_data=010200001d2cb1b08ea72c54eb886b37dd01
+2025-03-20 11:54:05,520 - INFO - a1lvnt250s0jlf-ats.iot.ap-southeast-1.amazonaws.com
+2025-03-20 11:54:05,521 - INFO - 8883
+2025-03-20 11:54:05,669 - INFO - [Server] Device successfully registered: {'message': 'A device with the same ID already exists.', 'device': None}
+2025-03-20 11:54:05,670 - INFO - [Server] (1) Registered new: IP=192.168.1.64, ID=2cb1b08ea72c54eb886b37dd01. count=1
+2025-03-20 11:54:05,670 - INFO - [Server] Sent response for function=1 with count=1
+2025-03-20 11:54:05,676 - INFO - Received data (hex): 1301020100000002000a0000002603e8000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:05,676 - INFO - [Parsed] function=0x03e8, content_len=38, content_data=000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:05,676 - INFO - {
+    "device_id": "2cb1b08ea72c54eb886b37dd01",
+    "current_time": 1742446445,
+    "breath_bpm": 0,
+    "breath_curve": 0.0,
+    "heart_bpm": 0,
+    "heart_rate_curve": 0.0,
+    "target_distance": 0.8999999761581421,
+    "signal_strength": 0.0,
+    "valid_bit_id": 0,
+    "body_move_energy": 0.0,
+    "body_move_range": 0.0,
+    "out_of_bed": true
+}
+2025-03-20 11:54:05,676 - INFO - [Before Publish] Preparing to publish data for device 2cb1b08ea72c54eb886b37dd01
+2025-03-20 11:54:05,677 - INFO - Message successfully sent!
+2025-03-20 11:54:05,779 - INFO - [MQTT] Successfully published message ID=1
+2025-03-20 11:54:07,687 - INFO - Received data (hex): 1301020100000003000a0000002603e8000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:07,688 - INFO - {
+    "device_id": "2cb1b08ea72c54eb886b37dd01",
+    "current_time": 1742446447,
+    "breath_bpm": 0,
+    "breath_curve": 0.0,
+    "heart_bpm": 0,
+    "heart_rate_curve": 0.0,
+    "target_distance": 0.8999999761581421,
+    "signal_strength": 0.0,
+    "valid_bit_id": 0,
+    "body_move_energy": 0.0,
+    "body_move_range": 0.0,
+    "out_of_bed": true
+}
+2025-03-20 11:54:07,743 - INFO - [MQTT] Successfully published message ID=2
+2025-03-20 11:54:09,729 - INFO - Received data (hex): 1301020100000004000a0000002603e8000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:09,730 - INFO - {
+    "device_id": "2cb1b08ea72c54eb886b37dd01",
+    "current_time": 1742446449,
+    "breath_bpm": 0,
+    "breath_curve": 0.0,
+    "heart_bpm": 0,
+    "heart_rate_curve": 0.0,
+    "target_distance": 0.8999999761581421,
+    "signal_strength": 0.0,
+    "valid_bit_id": 0,
+    "body_move_energy": 0.0,
+    "body_move_range": 0.0,
+    "out_of_bed": true
+}
+2025-03-20 11:54:09,787 - INFO - [MQTT] Successfully published message ID=3
+2025-03-20 11:54:12,801 - INFO - Received data (hex): 1301020100000005000a0000002603e8000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:12,802 - INFO - [Parsed] function=0x03e8, content_len=38, content_data=000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:12,802 - INFO - {
+    "device_id": "2cb1b08ea72c54eb886b37dd01",
+    "current_time": 1742446452,
+    "breath_bpm": 0,
+    "breath_curve": 0.0,
+    "heart_bpm": 0,
+    "heart_rate_curve": 0.0,
+    "target_distance": 0.8999999761581421,
+    "signal_strength": 0.0,
+    "valid_bit_id": 0,
+    "body_move_energy": 0.0,
+    "body_move_range": 0.0,
+    "out_of_bed": true
+}
+2025-03-20 11:54:12,803 - INFO - [Before Publish] Preparing to publish data for device 2cb1b08ea72c54eb886b37dd01
+2025-03-20 11:54:12,803 - INFO - Message successfully sent!
+2025-03-20 11:54:12,862 - INFO - [MQTT] Successfully published message ID=4
+2025-03-20 11:54:13,683 - INFO - Received data (hex): 1301020100000006000a0000002603e8000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:13,684 - INFO - {
+    "device_id": "2cb1b08ea72c54eb886b37dd01",
+    "current_time": 1742446453,
+    "breath_bpm": 0,
+    "breath_curve": 0.0,
+    "heart_bpm": 0,
+    "heart_rate_curve": 0.0,
+    "target_distance": 0.8999999761581421,
+    "signal_strength": 0.0,
+    "valid_bit_id": 0,
+    "body_move_energy": 0.0,
+    "body_move_range": 0.0,
+    "out_of_bed": true
+}
+2025-03-20 11:54:13,742 - INFO - [MQTT] Successfully published message ID=5
+2025-03-20 11:54:16,693 - INFO - Received data (hex): 1301020100000007000a0000002603e8000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:16,694 - INFO - {
+    "device_id": "2cb1b08ea72c54eb886b37dd01",
+    "current_time": 1742446456,
+    "breath_bpm": 0,
+    "breath_curve": 0.0,
+    "heart_bpm": 0,
+    "heart_rate_curve": 0.0,
+    "target_distance": 0.8999999761581421,
+    "signal_strength": 0.0,
+    "valid_bit_id": 0,
+    "body_move_energy": 0.0,
+    "body_move_range": 0.0,
+    "out_of_bed": true
+}
+2025-03-20 11:54:16,752 - INFO - [MQTT] Successfully published message ID=6
+2025-03-20 11:54:18,688 - INFO - Received data (hex): 1301020100000008000a0000002603e8000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:18,688 - INFO - [Parsed] function=0x03e8, content_len=38, content_data=000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:18,689 - INFO - {
+    "device_id": "2cb1b08ea72c54eb886b37dd01",
+    "current_time": 1742446458,
+    "breath_bpm": 0,
+    "breath_curve": 0.0,
+    "heart_bpm": 0,
+    "heart_rate_curve": 0.0,
+    "target_distance": 0.8999999761581421,
+    "signal_strength": 0.0,
+    "valid_bit_id": 0,
+    "body_move_energy": 0.0,
+    "body_move_range": 0.0,
+    "out_of_bed": true
+}
+2025-03-20 11:54:18,689 - INFO - [Before Publish] Preparing to publish data for device 2cb1b08ea72c54eb886b37dd01
+2025-03-20 11:54:18,690 - INFO - Message successfully sent!
+2025-03-20 11:54:18,746 - INFO - [MQTT] Successfully published message ID=7
+2025-03-20 11:54:21,698 - INFO - Received data (hex): 1301020100000009000a0000002603e8000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:21,698 - INFO - {
+    "device_id": "2cb1b08ea72c54eb886b37dd01",
+    "current_time": 1742446461,
+    "breath_bpm": 0,
+    "breath_curve": 0.0,
+    "heart_bpm": 0,
+    "heart_rate_curve": 0.0,
+    "target_distance": 0.8999999761581421,
+    "signal_strength": 0.0,
+    "valid_bit_id": 0,
+    "body_move_energy": 0.0,
+    "body_move_range": 0.0,
+    "out_of_bed": true
+}
+2025-03-20 11:54:21,749 - INFO - [MQTT] Successfully published message ID=8
+2025-03-20 11:54:22,733 - INFO - Received data (hex): 130102010000000a000a0000002603e8000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:22,733 - INFO - {
+    "device_id": "2cb1b08ea72c54eb886b37dd01",
+    "current_time": 1742446462,
+    "breath_bpm": 0,
+    "breath_curve": 0.0,
+    "heart_bpm": 0,
+    "heart_rate_curve": 0.0,
+    "target_distance": 0.8999999761581421,
+    "signal_strength": 0.0,
+    "valid_bit_id": 0,
+    "body_move_energy": 0.0,
+    "body_move_range": 0.0,
+    "out_of_bed": true
+}
+2025-03-20 11:54:22,789 - INFO - [MQTT] Successfully published message ID=9
+2025-03-20 11:54:25,697 - INFO - Received data (hex): 130102010000000b000a0000002603e8000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:25,697 - INFO - [Parsed] function=0x03e8, content_len=38, content_data=000000000000000000000000000000003f66666600000000000000000000000000000000
+2025-03-20 11:54:25,698 - INFO - {
+    "device_id": "2cb1b08ea72c54eb886b37dd01",
+    "current_time": 1742446465,
+    "breath_bpm": 0,
+    "breath_curve": 0.0,
+    "heart_bpm": 0,
+    "heart_rate_curve": 0.0,
+    "target_distance": 0.8999999761581421,
+    "signal_strength": 0.0,
+    "valid_bit_id": 0,
+    "body_move_energy": 0.0,
+    "body_move_range": 0.0,
+    "out_of_bed": true
+}
+2025-03-20 11:54:25,698 - INFO - [Before Publish] Preparing to publish data for device 2cb1b08ea72c54eb886b37dd01
+2025-03-20 11:54:25,698 - INFO - Message successfully sent!
+2025-03-20 11:54:25,757 - INFO - [MQTT] Successfully published message ID=10
+2025-03-20 11:54:28,692 - INFO - [INFO] Tasks were cancelled.
+2025-03-20 11:54:28,693 - INFO - [INFO] Cleaning up before exit...
+2025-03-20 11:54:28,693 - INFO - [Async] Removed IP=192.168.1.64 from ip_to_id_map.
+2025-03-20 11:54:28,693 - INFO - [Async] Ended for 192.168.1.64.
