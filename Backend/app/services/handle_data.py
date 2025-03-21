@@ -1,5 +1,17 @@
 import struct
 
+def check_in_out_of_bed(data):
+
+    data['breath_bpm'] = int(data['breath_bpm'])
+    data['heart_bpm'] = int(data['heart_bpm'])
+
+    if data['breath_bpm'] == 0 and data['heart_bpm'] == 0:
+        data['out_of_bed'] = True
+    else:
+        data['out_of_bed'] = False
+
+    return data
+
 def parse_28_byte_content(data_28):
     """
     data_28: 28 bytes => 6 floats (24 bytes) + 1 uint (4 bytes).

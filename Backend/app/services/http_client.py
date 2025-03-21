@@ -1,7 +1,9 @@
 import requests
 import json
 
-import environment
+import aiohttp
+
+import app.environment.environment as environment
 
 # Base URL for DreamsEdge API
 BASE_URL = f"http://{environment.IP_API}:8000"
@@ -49,6 +51,7 @@ def login_access_token(user_name, password):
         return response.json()["access_token"]
 
     except requests.HTTPError as http_err:
+
         print(f"Error getting access token: {http_err}")
         print(f"Response: {response.text}")
     except requests.RequestException as e:
@@ -67,7 +70,6 @@ def get_facility_list(skip=0, limit=100):
 
         facility_list = response.json()
 
-        # Print the JSON response in a readable format
         print(json.dumps(facility_list, indent=4, ensure_ascii=False))
 
         return facility_list
@@ -82,11 +84,8 @@ def get_facility_list(skip=0, limit=100):
 
     return None
 
-
-
 def get_device_list(skip=0, limit=100):
     url = f"{BASE_URL}/device/list?skip={skip}&limit={limit}"
-    print(f"Fetching device list from: {url}")  # Debugging
 
     try:
         response = requests.get(url, headers=get_headers(), timeout=10)
@@ -95,9 +94,6 @@ def get_device_list(skip=0, limit=100):
         response.raise_for_status()  # Raise an error for non-200 responses
 
         device_list = response.json()
-
-        # Print the JSON response in a readable format
-        print(json.dumps(device_list, indent=4, ensure_ascii=False))
 
         return device_list
     except requests.exceptions.Timeout:
@@ -135,8 +131,7 @@ def register_tcp_server(facility_id, unique_name):
 
         register_tcp = response.json()
 
-        # Print the JSON response in a readable format
-        print(json.dumps(register_tcp, indent=4, ensure_ascii=False))
+        return register_tcp
 
     except requests.HTTPError as http_err:
         print(f"Error registering TCP server: {http_err}")
@@ -144,7 +139,7 @@ def register_tcp_server(facility_id, unique_name):
     except requests.RequestException as e:
         print("Request error:", e)
 
-def register_device(device_id):
+async def register_device(device_id):
     url = f"{BASE_URL}/device/create"
 
     # Payload with Aerosense Device ID
@@ -154,24 +149,22 @@ def register_device(device_id):
     }
 
     try:
-        response = requests.post(url, json=data, headers=get_headers())
-        response.raise_for_status()  # Raise an error for non-200 responses
+        async with aiohttp.ClientSession() as session:
+            
+            async with session.post(url, json=data, headers=get_headers()) as response:
 
-        new_device = response.json()
+                response.raise_for_status()  # Raise an error for non-200 responses
 
-        # Print the JSON response in a readable format
-        print(json.dumps(new_device, indent=4, ensure_ascii=False))
+                new_device = await response.json()
 
-        print("Device successfully registered:", response.json())
-        return response.json()
+                print(json.dumps(new_device, indent=4, ensure_ascii=False))
 
-    except requests.HTTPError as http_err:
-        print(f"HTTP error occurred: {http_err}")
-        print(f"Response Content: {response.text}")
-    except requests.RequestException as e:
-        print("Request error:", e)
+                # print("Device successfully registered:", new_device)
+                return new_device
 
-    return None
+    except Exception as e:
+        print(f"Error registering device: {e}")
+        return None
 
 def generate_topic(device_id):
     return f"{environment.TCP_SERVER_NAME}/{device_id}"  # Format: [tcp_server_unique_name]/[device_id]
